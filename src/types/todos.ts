@@ -1,46 +1,45 @@
-
-
-export type AddressType = {
-    street: string,
-    city: string
-}
-
-export type User = {
+export type Todo = {
+    userId: number,
     id: number,
-    name: string,
-    username: null | string,
-    address: null | Array<AddressType>
+    title: string,
+    completed: boolean
 }
 
-export type UserState = {
-    users: Array<User>
+export type TodosState = {
+    todos: Array<Todo>,
+    isLoading: boolean,
+    error: null | string,
+    limit: number,
+    page: number
 }
 
-export enum UsersActionType {
-    FETCH_USERS = "FETCH_USERS",
-    ADD_USER = "ADD_USER",
-    DELETE_USER = "DELETE_USER",
-    CHANGE_USER = "CHANGE_USER"
+export enum TodosActionTypes {
+    FETCH_TODOS = "FETCH_TODOS",
+    FETCH_TODOS_SUCCESS = "FETCH_TODOS_SUCCESS",
+    FETCH_TODOS_ERROR = "FETCH_TODOS_ERROR",
+    SET_TODOS_PAGE = "SET_TODOS_PAGE"
 }
 
-export type FetchUsersAction = {
-    type: typeof UsersActionType.FETCH_USERS,
-    payload: Array<User>
+export type FetchTodosAction = {
+    type: TodosActionTypes.FETCH_TODOS
 }
 
-export type AddUserAction = {
-    type: typeof UsersActionType.ADD_USER,
+export type FetchTodosSuccessAction = {
+    type: TodosActionTypes.FETCH_TODOS_SUCCESS,
+    payload: Array<Todo>
+}
+
+export type FetchTodosErrorAction = {
+    type: TodosActionTypes.FETCH_TODOS_ERROR,
     payload: string
 }
 
-export type DeleteUserAction = {
-    type: typeof UsersActionType.DELETE_USER,
+export type SetTodosErrorAction = {
+    type: TodosActionTypes.SET_TODOS_PAGE,
     payload: number
 }
 
-export type ChangeUserAction = {
-    type: typeof UsersActionType.CHANGE_USER,
-    payload: User
-}
-
-export type UsersAction = FetchUsersAction | AddUserAction | DeleteUserAction | ChangeUserAction
+export type TodosAction = FetchTodosAction
+    | FetchTodosSuccessAction
+    | FetchTodosErrorAction
+    | SetTodosErrorAction;

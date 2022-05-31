@@ -1,31 +1,26 @@
-import {FetchUsersAction, UsersAction, UsersActionType, UserState} from "../../types/users";
+import {TodosAction, TodosActionTypes, TodosState} from "../../types/todos";
 
-const initialState: UserState = {
-    users: []
+const initialState: TodosState = {
+    todos: [],
+    isLoading: false,
+    error: null,
+    limit: 10,
+    page: 1
 }
 
-export const usersReducer = (state = initialState, action: UsersAction): UserState => {
+export const todosReducer = (state = initialState, action: TodosAction): TodosState => {
     switch (action.type) {
-        case UsersActionType.FETCH_USERS:
-            return {...state, users: [...state.users, ...action.payload]}
+        case TodosActionTypes.FETCH_TODOS:
+            return {...state, isLoading: true }
 
-        case UsersActionType.ADD_USER:
-            let user = {
-                id: Date.now(),
-                name: action.payload,
-                username: null,
-                address: null
-            }
-            return {...state, users: [...state.users, user]}
+        case TodosActionTypes.FETCH_TODOS_SUCCESS:
+            return {...state, isLoading: false, todos: action.payload}
 
-        case UsersActionType.DELETE_USER:
-            return {...state, users: state.users.filter(u => u.id !== action.payload)}
+        case TodosActionTypes.FETCH_TODOS_ERROR:
+            return {...state, isLoading: true, error: action.payload }
 
-        case UsersActionType.CHANGE_USER:
-            return {...state, users: state.users.map(u => {
-                    if (u.id === action.payload.id) u.name = action.payload.name
-                    return u
-                })}
+        case TodosActionTypes.SET_TODOS_PAGE:
+            return {...state, page: action.payload}
 
         default:
             return state

@@ -1,62 +1,45 @@
 import React, {useEffect, useState} from 'react';
 import {UseTypedSelector} from "../hooks/useTypedSelector";
-import {fetchUsersApi} from "../api/usersApi";
+import {fetchTodos, setTodosPage} from "../action-creators/todos";
 import {UseActions} from "../hooks/useActions";
-import {useDispatch} from "react-redux";
 
+const TodosList: React.FC = () => {
+    const {todos, isLoading, error, page, limit} = UseTypedSelector(state => state.todos)
+    const {fetchTodos, setTodosPage} = UseActions();
+    const pages = [1, 2, 3, 4, 5]
 
-const UserList = () => {
-    const users = UseTypedSelector(state => state.users.users)
-    const [nameUser, setNameUser] = useState('')
-    const dispatch = useDispatch()
-    const {fetchUsersApi} = UseActions()
+    useEffect(() => {
+        fetchTodos(limit, page)
+    }, [page])
 
-    const fetchUser = () => {
-        fetchUsersApi()
-    }
-    // useEffect(() => {
-    //     fetchUsersApi()
-    // })
+    if (isLoading) return <div>Загрузка....</div>
 
-    const addUser = (user: string) => {
-        if (nameUser) {
-            dispatch({type: 'ADD_USER', payload: user})
-            setNameUser('')
-        }
-    }
-
-    const deleteUser = (id: number) => {
-        dispatch({type: 'DELETE_USER', payload: id})
-    }
-
-    const changeUser = (user: any) => {
-        user.name = prompt('', user.name)
-        dispatch({type: 'DELETE_USER', payload: user})
-    }
+    if (error) return <div>{error}</div>
 
     return (
         <div style={{marginTop: "30px"}}>
-            <input value={nameUser} onChange={(e) => setNameUser(e.target.value)}type="text" />
-            <button onClick={() => addUser(nameUser)}>Add User</button>
-            <button onClick={() => fetchUser()}>Add Many Users</button>
             <div>
-                {users.length > 0
-                    ?
+                {todos.length > 0 &&
                     <div>
-                        {users.map(user => <div key={user.id}>
-                                <div onClick={() => changeUser(user)}>{user.name}</div>
-                                <div style={{marginLeft: '15px', fontSize: '12px'}} onClick={() => deleteUser(user.id)}>delete</div>
+                        {todos.map(todo => <div key={todo.id}>
+                                <span>{todo.id}</span> -
+                                <span>{todo.title}</span>
                             </div>
                         )}
                     </div>
-                    :
-                    <div>
-                        Users no
-                    </div>
                 }
+            </div>
+            <div style={{marginTop: "20px", textAlign: 'center'}}>
+                {pages.map((p, i) =>
+                    <span
+                        onClick={() => setTodosPage(p)}
+                        style={{border: p === page ? '1px solid red' : '1px solid black', padding: '10px'}}
+                        key={i}>
+                        {p}
+                    </span>)}
             </div>
         </div>
     );
 }
 
-export default UserList;
+export default TodosList;

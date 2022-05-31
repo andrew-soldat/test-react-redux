@@ -1,66 +1,62 @@
-
-
-type AddressType = {
+export type AddressType = {
     street: string,
     city: string
 }
 
-type User = {
+export type User = {
     id: number,
     name: string,
     username: null | string,
     address: null | Array<AddressType>
 }
 
-type UserState = {
-    users: Array<User>
+export type UserState = {
+    users: Array<User>,
+    isLoading: boolean,
+    error: null | string
 }
 
-const initialState: UserState = {
-    users: []
-}
-
-enum UsersActionType {
-    ADD_MANY_USERS = "ADD_MANY_USERS",
+export enum UsersActionType {
+    FETCH_USERS = "FETCH_USERS",
+    FETCH_USERS_SUCCESS = "FETCH_USERS_SUCCESS",
+    FETCH_USERS_ERROR = "FETCH_USERS_ERROR",
     ADD_USER = "ADD_USER",
-    DELETE_USER = "DELETE_USER"
+    DELETE_USER = "DELETE_USER",
+    CHANGE_USER = "CHANGE_USER"
 }
 
-type AddManyUsersAction = {
-    type: typeof UsersActionType.ADD_MANY_USERS,
+export type FetchUsersAction = {
+    type: typeof UsersActionType.FETCH_USERS
+}
+
+export type FetchUsersSuccessAction = {
+    type: typeof UsersActionType.FETCH_USERS_SUCCESS,
     payload: Array<User>
 }
 
-type AddUserAction = {
+export type FetchUsersErrorAction = {
+    type: typeof UsersActionType.FETCH_USERS_ERROR,
+    payload: string
+}
+
+export type AddUserAction = {
     type: typeof UsersActionType.ADD_USER,
     payload: string
 }
 
-type DeleteUserAction = {
+export type DeleteUserAction = {
     type: typeof UsersActionType.DELETE_USER,
     payload: number
 }
 
-type UsersAction = AddManyUsersAction | AddUserAction | DeleteUserAction
-
-export const usersReducer = (state = initialState, action: UsersAction): UserState => {
-    switch (action.type) {
-        case UsersActionType.ADD_MANY_USERS:
-            return {...state, users: [...state.users, ...action.payload]}
-
-        case UsersActionType.ADD_USER:
-            let user = {
-                id: Date.now(),
-                name: action.payload,
-                username: null,
-                address: null
-            }
-            return {...state, users: [...state.users, user]}
-
-        case UsersActionType.DELETE_USER:
-            return {...state, users: state.users.filter(u => u.id !== action.payload)}
-
-        default:
-            return state
-    }
+export type ChangeUserAction = {
+    type: typeof UsersActionType.CHANGE_USER,
+    payload: User
 }
+
+export type UsersAction = FetchUsersAction
+    | FetchUsersSuccessAction
+    | FetchUsersErrorAction
+    | AddUserAction
+    | DeleteUserAction
+    | ChangeUserAction
