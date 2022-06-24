@@ -1,24 +1,25 @@
 import React from 'react';
-import {useDispatch} from "react-redux";
-import {UseTypedSelector} from "../hooks/useTypedSelector";
+import {UseAppDispatch, UseAppSelector} from "../hooks/useRedux";
+import {cashSlice} from "../redux/reducers/cashSlice"
 
 const Cash: React.FC = () => {
-    const dispatch = useDispatch()
-    const cash = UseTypedSelector(state => state.cash.cash)
+    const dispatch = UseAppDispatch()
+    const cash = UseAppSelector(state => state.cashReducer.cash)
+    const {increment, decrement} = cashSlice.actions;
 
-    const addCash = (cash: number) => {
-        dispatch({type: 'ADD_CASH', payload: cash})
+    const incrementF = (cash: number) => {
+        dispatch(increment(cash))
     }
 
-    const getCash = (cash: number) => {
-        dispatch({type: 'GET_CASH', payload: cash})
+    const decrementF = (cash: number) => {
+        dispatch(decrement(cash))
     }
 
     return (
         <div className="">
             <div>{cash}</div>
-            <button onClick={() => addCash(Number(prompt()))}>Add</button>
-            <button onClick={() => getCash(Number(prompt()))}>Get</button>
+            <button onClick={() => incrementF(Number(prompt()))}>Increment</button>
+            <button onClick={() => decrementF(Number(prompt()))}>Decrement</button>
         </div>
     );
 }

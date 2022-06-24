@@ -1,7 +1,7 @@
 
 import Cash from "./components/Cash";
 import UsersList from "./components/UsersList";
-import TodosList from "./components/TodosList";
+import PostsList from "./components/PostsList";
 
 function App() {
 
@@ -17,7 +17,7 @@ function App() {
                 <UsersList />
             </div>
             <div style={{marginTop: "30px"}}>
-                <TodosList />
+                <PostsList />
             </div>
         </div>
     );

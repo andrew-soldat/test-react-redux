@@ -1,12 +1,12 @@
 import {combineReducers} from "redux";
-import {cashReducer} from "./cashReducer";
-import {usersReducer} from "./usersReducer";
-import {todosReducer} from "./todosReducer";
+import cashReducer from "./cashSlice";
+import usersReducer from "./usersSlice";
+import {postApi} from "../../services/PostServices";
 
 export const rootReducer = combineReducers({
-    cash: cashReducer,
-    users: usersReducer,
-    todos: todosReducer
+    cashReducer,
+    usersReducer,
+    [postApi.reducerPath]: postApi.reducer
 })
 
 export type RootState = ReturnType<typeof rootReducer>

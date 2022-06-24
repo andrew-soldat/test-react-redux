@@ -1,48 +1,53 @@
 import React, {useEffect, useState} from 'react';
-import {UseTypedSelector} from "../hooks/useTypedSelector";
+import {UseAppDispatch, UseAppSelector} from "../hooks/useRedux";
 import {fetchUsers} from "../action-creators/users";
-import {UseActions} from "../hooks/useActions";
-import {useDispatch} from "react-redux";
-
+import {usersSlice} from "../redux/reducers/usersSlice";
+import {User} from "../types/users";
 
 const UserList: React.FC = () => {
-    const users = UseTypedSelector(state => state.users.users)
     const [nameUser, setNameUser] = useState('')
-    const dispatch = useDispatch()
-    const {fetchUsers} = UseActions()
+    const {users, isLoading, error} = UseAppSelector(state => state.usersReducer)
+    const dispatch = UseAppDispatch()
+    const {addUser, deleteUser, changeUser} = usersSlice.actions
 
     useEffect(() => {
-        fetchUsers()
+        dispatch(fetchUsers())
     }, [])
 
-    const addUser = (user: string) => {
+    const addUserFunc = (user: string) => {
         if (nameUser) {
-            dispatch({type: 'ADD_USER', payload: user})
+            dispatch(addUser(user))
             setNameUser('')
         }
     }
 
-    const deleteUser = (id: number) => {
-        dispatch({type: 'DELETE_USER', payload: id})
+    const deleteUserFunc = (id: number) => {
+        dispatch(deleteUser(id))
     }
 
-    const changeUser = (user: any) => {
-        user.name = prompt('', user.name)
-        dispatch({type: 'DELETE_USER', payload: user})
+    const changeUserFunc = (user: User) => {
+        const name: string | null = prompt('', user.name);
+        dispatch(changeUser({user, name}))
     }
+
+    if (isLoading) return <div>Загрузка....</div>
+
+    if (error) return <div>{error}</div>
 
     return (
         <div style={{marginTop: "30px"}}>
             <input value={nameUser} onChange={(e) => setNameUser(e.target.value)} type="text"/>
-            <button onClick={() => addUser(nameUser)}>Add User</button>
+            <button onClick={() => addUserFunc(nameUser)}>Add User</button>
             <div>
                 {users.length > 0
                     ?
                     <div>
                         {users.map(user => <div key={user.id}>
-                                <div onClick={() => changeUser(user)}>{user.name}</div>
+                                <div
+                                    onClick={() => changeUserFunc(user)}
+                                >{user.name}</div>
                                 <div style={{marginLeft: '15px', fontSize: '12px'}}
-                                     onClick={() => deleteUser(user.id)}>delete
+                                     onClick={() => deleteUserFunc(user.id)}>delete
                                 </div>
                             </div>
                         )}
